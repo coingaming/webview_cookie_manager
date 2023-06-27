@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -16,6 +15,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final cookieManager = WebviewCookieManager();
+  late WebViewController webViewController;
+
+  bool _cookiesAreReady = false;
 
   final String _url = 'https://youtube.com';
   final String cookieValue = 'some-cookie-value';
@@ -25,7 +27,39 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    cookieManager.clearCookies();
+
+    _setCookies();
+
+    webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (_) async {
+            final gotCookies = await cookieManager.getCookies(_url);
+            for (var item in gotCookies) {
+              print(item);
+            }
+          },
+        ),
+      )
+      ..loadRequest(
+        Uri.parse(_url),
+      );
+  }
+
+  Future<void> _setCookies() async {
+    await cookieManager.clearCookies();
+
+    await cookieManager.setCookies([
+      Cookie(cookieName, cookieValue)
+        ..domain = domain
+        ..expires = DateTime.now().add(Duration(days: 10))
+        ..httpOnly = false
+    ]);
+
+    setState(() {
+      _cookiesAreReady = true;
+    });
   }
 
   @override
@@ -44,24 +78,11 @@ class _MyAppState extends State<MyApp> {
             )
           ],
         ),
-        body: WebView(
-          initialUrl: _url,
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (controller) async {
-            await cookieManager.setCookies([
-              Cookie(cookieName, cookieValue)
-                ..domain = domain
-                ..expires = DateTime.now().add(Duration(days: 10))
-                ..httpOnly = false
-            ]);
-          },
-          onPageFinished: (_) async {
-            final gotCookies = await cookieManager.getCookies(_url);
-            for (var item in gotCookies) {
-              print(item);
-            }
-          },
-        ),
+        body: _cookiesAreReady
+            ? WebViewWidget(controller: webViewController)
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
     );
   }
