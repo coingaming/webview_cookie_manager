@@ -7,7 +7,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import android.net.Uri;
 import android.os.Build;
@@ -41,10 +40,6 @@ public class WebviewCookieManagerPlugin implements FlutterPlugin, MethodCallHand
     // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
     // depending on the user's project. onAttachedToEngine or registerWith must both be defined
     // in the same class.
-    public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "webview_cookie_manager");
-        channel.setMethodCallHandler(new WebviewCookieManagerPlugin());
-    }
 
     private static void hasCookies(final Result result) {
         CookieManager cookieManager = CookieManager.getInstance();
