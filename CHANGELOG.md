@@ -1,3 +1,47 @@
+## 2.1.0
+
+* Added Gradle 9.0 compatibility
+
+## 2.0.16
+
+* Added ios compability
+
+## 2.0.15
+
+* Added ios compability
+
+## 2.0.14
+
+* Added ios compability
+
+## 2.0.13
+
+* Housekeeping
+
+## 2.0.12
+
+* Housekeeping - removed deprecated methods
+
+## 2.0.11
+
+* Fixed some warnings related to already definitions and methods
+
+## 2.0.10
+
+* Replaced Android Register to FlutterPluginBinding for initialization
+
+## 2.0.9
+
+* Updated Readme and some missing descriptions
+
+## 2.0.8
+
+* Add Flutter 3.29.0 and AGP 8 support 
+
+## 2.0.7
+
+* Add missing namespace parameter 
+
 ## 2.0.6
 
 * Remove engine dependency([#55](https://github.com/fryette/webview_cookie_manager/pull/55))
